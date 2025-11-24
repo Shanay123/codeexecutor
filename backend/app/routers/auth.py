@@ -15,6 +15,8 @@ async def signup(
     try:
         print(f"[SIGNUP] Attempting signup for: {request.email}")
         print(f"[SIGNUP] Supabase URL: {supabase.supabase_url}")
+        print(f"[SIGNUP] Service key (first 20 chars): {supabase.supabase_service_key[:20]}...")
+        print(f"[SIGNUP] Anon key (first 20 chars): {supabase.supabase_anon_key[:20]}...")
         auth_response = supabase.auth.sign_up({
             "email": request.email,
             "password": request.password,
