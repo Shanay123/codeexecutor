@@ -17,7 +17,6 @@ const Dashboard = () => {
       setProblems(response.data)
     } catch (err) {
       setError('Failed to load problems')
-      console.error(err)
     } finally {
       setLoading(false)
     }

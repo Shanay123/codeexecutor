@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from supabase import Client
 from app.database import get_supabase_client
-from app.models import SignupRequest, LoginRequest, UserResponse
+from app.models import SignupRequest, LoginRequest
 import uuid
 
 router = APIRouter()
@@ -12,11 +12,7 @@ async def signup(
     request: SignupRequest,
     supabase: Client = Depends(get_supabase_client)
 ):
-    """
-    Register a new user
-    """
     try:
-        # Sign up with Supabase Auth
         auth_response = supabase.auth.sign_up({
             "email": request.email,
             "password": request.password,
@@ -28,7 +24,6 @@ async def signup(
                 detail="Failed to create user"
             )
         
-        # Create user role entry (default: user)
         user_id = auth_response.user.id
         supabase.table("user_roles").insert({
             "id": str(uuid.uuid4()),
@@ -47,6 +42,8 @@ async def signup(
                 "refresh_token": auth_response.session.refresh_token if auth_response.session else None
             }
         }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -59,9 +56,6 @@ async def login(
     request: LoginRequest,
     supabase: Client = Depends(get_supabase_client)
 ):
-    """
-    Login user
-    """
     try:
         auth_response = supabase.auth.sign_in_with_password({
             "email": request.email,
@@ -74,7 +68,6 @@ async def login(
                 detail="Invalid credentials"
             )
         
-        # Get user role
         role_result = supabase.table("user_roles").select("role").eq("user_id", auth_response.user.id).execute()
         role = role_result.data[0]["role"] if role_result.data else "user"
         
@@ -89,6 +82,8 @@ async def login(
                 "refresh_token": auth_response.session.refresh_token
             }
         }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -98,9 +93,6 @@ async def login(
 
 @router.post("/logout")
 async def logout(supabase: Client = Depends(get_supabase_client)):
-    """
-    Logout user
-    """
     try:
         supabase.auth.sign_out()
         return {"message": "Logged out successfully"}
@@ -109,4 +101,3 @@ async def logout(supabase: Client = Depends(get_supabase_client)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
-

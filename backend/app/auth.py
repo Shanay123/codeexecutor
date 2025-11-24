@@ -10,14 +10,8 @@ async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     supabase: Client = Depends(get_supabase_client)
 ):
-    """
-    Verify the JWT token from Supabase and return the current user
-    """
     try:
-        token = credentials.credentials
-        
-        # Verify the token with Supabase
-        user = supabase.auth.get_user(token)
+        user = supabase.auth.get_user(credentials.credentials)
         
         if not user or not user.user:
             raise HTTPException(
@@ -26,6 +20,8 @@ async def get_current_user(
             )
         
         return user.user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -37,17 +33,9 @@ async def get_current_user_role(
     user = Depends(get_current_user),
     supabase: Client = Depends(get_supabase_client)
 ):
-    """
-    Get the user's role from the user_roles table
-    """
     try:
         result = supabase.table("user_roles").select("role").eq("user_id", user.id).execute()
-        
-        if result.data and len(result.data) > 0:
-            return result.data[0]["role"]
-        else:
-            # Default role is 'user'
-            return "user"
+        return result.data[0]["role"] if result.data else "user"
     except Exception:
         return "user"
 
@@ -56,9 +44,6 @@ async def require_admin(
     user = Depends(get_current_user),
     supabase: Client = Depends(get_supabase_client)
 ):
-    """
-    Require that the current user is an admin
-    """
     role = await get_current_user_role(user, supabase)
     
     if role != "admin":
@@ -68,4 +53,3 @@ async def require_admin(
         )
     
     return user
-

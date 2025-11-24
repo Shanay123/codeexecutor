@@ -13,9 +13,6 @@ async def execute_solution(
     function_signature: Optional[str] = None,
     user = Depends(get_current_user)
 ):
-    """
-    Execute Python code against test cases
-    """
     try:
         results: List[TestResult] = []
         all_passed = True
@@ -48,4 +45,3 @@ async def execute_solution(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Execution failed: {str(e)}"
         )
-

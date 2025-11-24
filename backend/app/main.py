@@ -5,7 +5,6 @@ from app.routers import auth, problems, solutions, test_cases, execute, submissi
 
 app = FastAPI(title="Code Execution Platform API")
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -19,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(problems.router, prefix="/api/problems", tags=["problems"])
 app.include_router(solutions.router, prefix="/api/solutions", tags=["solutions"])
@@ -37,4 +35,3 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
-

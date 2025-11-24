@@ -53,7 +53,6 @@ const ProblemDetail = () => {
       }
     } catch (err) {
       setError('Failed to load problem data')
-      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -234,7 +233,7 @@ const ProblemDetail = () => {
             <div className="border-t border-gray-200 pt-4">
               <h3 className="font-semibold mb-3">Add New Test Case</h3>
               <div className="mb-2 text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                💡 Use JSON format: Input is array of args (e.g., [2, 3]), Output is return value (e.g., 5 or [0,1])
+                Use JSON format: Input is array of args (e.g., [2, 3]), Output is return value (e.g., 5 or [0,1])
               </div>
               <div className="space-y-3">
                 <div>
@@ -285,7 +284,7 @@ const ProblemDetail = () => {
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold">Test Case {index + 1}</span>
                       <span className={`text-sm font-semibold ${result.passed ? 'text-green-700' : 'text-red-700'}`}>
-                        {result.passed ? '✓ PASSED' : '✗ FAILED'}
+                        {result.passed ? 'PASSED' : 'FAILED'}
                       </span>
                     </div>
                     {!result.passed && (
@@ -310,7 +309,7 @@ const ProblemDetail = () => {
               
               {testResults.all_passed && (
                 <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded">
-                  <p className="text-green-800 font-semibold">🎉 All tests passed! You can now submit for review.</p>
+                  <p className="text-green-800 font-semibold">All tests passed! You can now submit for review.</p>
                 </div>
               )}
             </div>

@@ -33,7 +33,6 @@ const AdminReview = () => {
       setTestCases(testCasesRes.data)
     } catch (err) {
       setError('Failed to load submission data')
-      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -149,12 +148,12 @@ const AdminReview = () => {
                 disabled={rerunning}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium disabled:opacity-50 text-sm"
               >
-                {rerunning ? 'Rerunning...' : '🔄 Rerun Tests'}
+                {rerunning ? 'Rerunning...' : 'Rerun Tests'}
               </button>
             </div>
             
             <div className="mb-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
-              💡 You can edit test cases and rerun tests at any time to verify edge cases
+              You can edit test cases and rerun tests at any time to verify edge cases
             </div>
             
             <div className="space-y-4">
@@ -252,7 +251,7 @@ const AdminReview = () => {
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold">Test Case {index + 1}</span>
                       <span className={`text-sm font-semibold ${result.passed ? 'text-green-700' : 'text-red-700'}`}>
-                        {result.passed ? '✓ PASSED' : '✗ FAILED'}
+                        {result.passed ? 'PASSED' : 'FAILED'}
                       </span>
                     </div>
                     {!result.passed && (

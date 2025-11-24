@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from datetime import datetime
 
 
-# Auth models
 class SignupRequest(BaseModel):
     email: str
     password: str
@@ -21,7 +19,6 @@ class UserResponse(BaseModel):
     role: Optional[str] = "user"
 
 
-# Problem models
 class ProblemCreate(BaseModel):
     title: str
     description: str
@@ -41,7 +38,6 @@ class ProblemResponse(BaseModel):
     created_at: str
 
 
-# Solution models
 class SolutionCreate(BaseModel):
     problem_id: str
     solution_code: str
@@ -60,7 +56,6 @@ class SolutionResponse(BaseModel):
     updated_at: str
 
 
-# Test case models
 class TestCaseCreate(BaseModel):
     problem_id: str
     input_data: str
@@ -80,7 +75,6 @@ class TestCaseResponse(BaseModel):
     created_at: str
 
 
-# Execution models
 class TestResult(BaseModel):
     test_case_id: str
     passed: bool
@@ -99,7 +93,6 @@ class ExecuteResponse(BaseModel):
     all_passed: bool
 
 
-# Submission models
 class SubmissionCreate(BaseModel):
     problem_id: str
     solution_id: str
@@ -107,7 +100,7 @@ class SubmissionCreate(BaseModel):
 
 
 class SubmissionReview(BaseModel):
-    status: str  # 'approved' or 'rejected'
+    status: str
     admin_notes: Optional[str] = None
 
 
@@ -124,4 +117,3 @@ class SubmissionResponse(BaseModel):
     reviewed_by: Optional[str] = None
     problem_title: Optional[str] = None
     solution_code: Optional[str] = None
-

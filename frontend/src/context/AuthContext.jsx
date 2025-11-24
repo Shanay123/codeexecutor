@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is logged in
     const token = localStorage.getItem('access_token')
     const userData = localStorage.getItem('user')
     
@@ -54,7 +53,6 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.post('/api/auth/logout')
     } catch (error) {
-      console.error('Logout error:', error)
     } finally {
       localStorage.removeItem('access_token')
       localStorage.removeItem('user')

@@ -19,7 +19,6 @@ const AdminDashboard = () => {
       setSubmissions(response.data)
     } catch (err) {
       setError('Failed to load submissions')
-      console.error(err)
     } finally {
       setLoading(false)
     }
