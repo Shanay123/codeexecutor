@@ -22,7 +22,8 @@ async def create_problem(
         "description": problem.description,
         "example_input": problem.example_input,
         "example_output": problem.example_output,
-        "function_signature": problem.function_signature
+        "function_signature": problem.function_signature,
+        "language": problem.language
     }
     
     result = supabase.table("problems").insert(problem_data).execute()

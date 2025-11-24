@@ -11,6 +11,7 @@ router = APIRouter()
 async def execute_solution(
     request: ExecuteRequest,
     function_signature: Optional[str] = None,
+    language: Optional[str] = "python",
     user = Depends(get_current_user)
 ):
     try:
@@ -23,7 +24,8 @@ async def execute_solution(
                 input_data=test_case.input_data,
                 expected_output=test_case.expected_output,
                 timeout=5,
-                function_signature=function_signature
+                function_signature=function_signature,
+                language=language
             )
             
             test_result = TestResult(

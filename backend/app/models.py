@@ -25,6 +25,7 @@ class ProblemCreate(BaseModel):
     example_input: str
     example_output: str
     function_signature: str
+    language: str = "python"
 
 
 class ProblemResponse(BaseModel):
@@ -35,12 +36,14 @@ class ProblemResponse(BaseModel):
     example_input: str
     example_output: str
     function_signature: str
+    language: str
     created_at: str
 
 
 class SolutionCreate(BaseModel):
     problem_id: str
     solution_code: str
+    language: Optional[str] = None
 
 
 class SolutionUpdate(BaseModel):
@@ -52,6 +55,7 @@ class SolutionResponse(BaseModel):
     problem_id: str
     user_id: str
     solution_code: str
+    language: Optional[str] = None
     created_at: str
     updated_at: str
 

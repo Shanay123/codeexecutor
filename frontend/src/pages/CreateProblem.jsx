@@ -5,12 +5,27 @@ import api from '../config/api'
 const CreateProblem = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [language, setLanguage] = useState('python')
   const [functionSignature, setFunctionSignature] = useState('def solution(nums: list[int], target: int) -> int:')
   const [exampleInput, setExampleInput] = useState('[1, 2, 3]')
   const [exampleOutput, setExampleOutput] = useState('6')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  // Update function signature template when language changes
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage)
+    if (newLanguage === 'python') {
+      setFunctionSignature('def solution(nums: list[int], target: int) -> int:')
+      setExampleInput('[1, 2, 3]')
+      setExampleOutput('6')
+    } else if (newLanguage === 'javascript') {
+      setFunctionSignature('function solution(nums, target) {')
+      setExampleInput('[1, 2, 3]')
+      setExampleOutput('6')
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,6 +39,7 @@ const CreateProblem = () => {
         function_signature: functionSignature,
         example_input: exampleInput,
         example_output: exampleOutput,
+        language,
       })
       navigate(`/problem/${response.data.id}`)
     } catch (err) {
@@ -45,10 +61,21 @@ const CreateProblem = () => {
           <p className="text-sm text-blue-800 mb-2">
             Define the function signature that users will implement. Test inputs will be JSON arrays passed as function arguments.
           </p>
-          <div className="bg-white rounded p-3 font-mono text-xs">
-            <div className="text-gray-600">Example: def two_sum(nums: list[int], target: int) -&gt; list[int]:</div>
-            <div className="text-gray-600 ml-4">Test Input: [[2,7,11,15], 9]</div>
-            <div className="text-gray-600 ml-4">Expected Output: [0, 1]</div>
+          <div className="bg-white rounded p-3 font-mono text-xs space-y-2">
+            {language === 'python' && (
+              <>
+                <div className="text-gray-600">Python Example: def two_sum(nums: list[int], target: int) -&gt; list[int]:</div>
+                <div className="text-gray-600 ml-4">Test Input: [[2,7,11,15], 9]</div>
+                <div className="text-gray-600 ml-4">Expected Output: [0, 1]</div>
+              </>
+            )}
+            {language === 'javascript' && (
+              <>
+                <div className="text-gray-600">JavaScript Example: function twoSum(nums, target) &#123;</div>
+                <div className="text-gray-600 ml-4">Test Input: [[2,7,11,15], 9]</div>
+                <div className="text-gray-600 ml-4">Expected Output: [0, 1]</div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -60,6 +87,21 @@ const CreateProblem = () => {
       )}
 
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 space-y-6">
+        <div>
+          <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+            Programming Language
+          </label>
+          <select
+            id="language"
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            value={language}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+          >
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+          </select>
+        </div>
+
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">
             Problem Title
@@ -101,10 +143,14 @@ const CreateProblem = () => {
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
             value={functionSignature}
             onChange={(e) => setFunctionSignature(e.target.value)}
-            placeholder="def my_function(param1: type1, param2: type2) -> return_type:"
+            placeholder={language === 'python' ? 
+              "def my_function(param1: type1, param2: type2) -> return_type:" :
+              "function myFunction(param1, param2) {"}
           />
           <p className="mt-1 text-xs text-gray-500">
-            Define the exact function users must implement (e.g., "def add(a: int, b: int) -&gt; int:")
+            {language === 'python' ? 
+              'Define the exact function users must implement (e.g., "def add(a: int, b: int) -> int:")' :
+              'Define the exact function users must implement (e.g., "function add(a, b) {")'}
           </p>
         </div>
 

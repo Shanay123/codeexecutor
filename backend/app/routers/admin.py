@@ -128,7 +128,7 @@ async def rerun_submission(
     supabase: Client = Depends(get_supabase_client)
 ):
     submission = supabase.table("submissions").select(
-        "*, solutions(solution_code), problems(id, function_signature)"
+        "*, solutions(solution_code), problems(id, function_signature, language)"
     ).eq("id", submission_id).execute()
     
     if not submission.data:
@@ -141,6 +141,7 @@ async def rerun_submission(
     solution_code = submission_data["solutions"]["solution_code"]
     problem_id = submission_data["problems"]["id"]
     function_signature = submission_data["problems"].get("function_signature")
+    language = submission_data["problems"].get("language", "python")
     
     test_cases = supabase.table("test_cases").select("*").eq("problem_id", problem_id).execute()
     
@@ -159,7 +160,8 @@ async def rerun_submission(
             input_data=test_case["input_data"],
             expected_output=test_case["expected_output"],
             timeout=5,
-            function_signature=function_signature
+            function_signature=function_signature,
+            language=language
         )
         
         test_result = TestResult(

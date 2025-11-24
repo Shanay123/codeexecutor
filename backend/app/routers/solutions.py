@@ -17,9 +17,14 @@ async def create_solution(
 ):
     existing = supabase.table("solutions").select("*").eq("problem_id", solution.problem_id).eq("user_id", user.id).execute()
     
+    # Get problem to inherit language if not specified
+    problem = supabase.table("problems").select("language").eq("id", solution.problem_id).execute()
+    language = solution.language if solution.language else (problem.data[0].get("language", "python") if problem.data else "python")
+    
     if existing.data:
         updated_data = {
             "solution_code": solution.solution_code,
+            "language": language,
             "updated_at": datetime.utcnow().isoformat()
         }
         result = supabase.table("solutions").update(updated_data).eq("id", existing.data[0]["id"]).execute()
@@ -29,7 +34,8 @@ async def create_solution(
         "id": str(uuid.uuid4()),
         "problem_id": solution.problem_id,
         "user_id": user.id,
-        "solution_code": solution.solution_code
+        "solution_code": solution.solution_code,
+        "language": language
     }
     result = supabase.table("solutions").insert(solution_data).execute()
     return result.data[0]

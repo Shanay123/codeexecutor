@@ -42,12 +42,22 @@ const ProblemDetail = () => {
       } catch (err) {
         // No solution exists - populate with function signature template
         if (problemRes.data.function_signature) {
-          const template = `${problemRes.data.function_signature}
+          const language = problemRes.data.language || 'python'
+          let template
+          if (language === 'javascript') {
+            template = `${problemRes.data.function_signature}
+  // Implement your solution here
+  
+}
+`
+          } else {
+            template = `${problemRes.data.function_signature}
     """
     Implement your solution here.
     """
     pass
 `
+          }
           setCode(template)
         }
       }
@@ -124,7 +134,8 @@ const ProblemDetail = () => {
         test_cases: testCases
       }, {
         params: {
-          function_signature: problem?.function_signature
+          function_signature: problem?.function_signature,
+          language: problem?.language || 'python'
         }
       })
       setTestResults(response.data)
@@ -170,7 +181,12 @@ const ProblemDetail = () => {
   return (
     <div className="px-4 sm:px-0">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{problem.title}</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-900">{problem.title}</h1>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+            {problem.language === 'javascript' ? 'JavaScript' : 'Python'}
+          </span>
+        </div>
       </div>
 
       {error && (
@@ -330,7 +346,8 @@ const ProblemDetail = () => {
             <div className="border border-gray-300 rounded overflow-hidden" style={{ height: '500px' }}>
               <Editor
                 height="100%"
-                defaultLanguage="python"
+                defaultLanguage={problem?.language || 'python'}
+                language={problem?.language || 'python'}
                 value={code}
                 onChange={(value) => setCode(value || '')}
                 theme="vs-light"
