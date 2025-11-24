@@ -13,10 +13,13 @@ async def signup(
     supabase: Client = Depends(get_supabase_client)
 ):
     try:
+        print(f"[SIGNUP] Attempting signup for: {request.email}")
+        print(f"[SIGNUP] Supabase URL: {supabase.supabase_url}")
         auth_response = supabase.auth.sign_up({
             "email": request.email,
             "password": request.password,
         })
+        print(f"[SIGNUP] Auth response received: {auth_response}")
         
         if not auth_response.user:
             raise HTTPException(
@@ -45,6 +48,9 @@ async def signup(
     except HTTPException:
         raise
     except Exception as e:
+        print(f"[SIGNUP ERROR] Exception type: {type(e).__name__}")
+        print(f"[SIGNUP ERROR] Exception message: {str(e)}")
+        print(f"[SIGNUP ERROR] Full exception: {repr(e)}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
